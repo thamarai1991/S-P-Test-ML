@@ -1,0 +1,126 @@
+<div class="header">
+  <div class="imgtag">
+    <img src="../assets/img/profile.png" alt="" class="pimg">
+    <h3>FirstName LastName</h3>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <div class="bodysec">
+    <div>
+      <h5>Overview &nbsp;&nbsp;&nbsp;<span *ngIf="save" style="color: green;">Changes saved</span></h5>
+    </div>
+
+    <form [formGroup]="personalForm" (ngSubmit)="onSubmit()">
+
+      <div class="form-group row">
+        <label class="col-sm-4 col-form-label"><i class="fa fa-user" aria-hidden="true"></i> Title : </label>
+        <div class="col-sm-6">
+          <span [hidden]="edit_span">
+            {{personalForm.value.title}}
+            <i class="fa fa-pencil" (click)="do_edit()"></i>
+          </span>
+          <span [hidden]="!edit_span"><input type="text" class="form-control" formControlName="title"
+              placeholder="Add a title"></span>
+        </div>
+        <span [hidden]="edit_val">
+          <i class="fa fa-check" (click)="do_save()"></i>
+          <i class="fa fa-times" (click)="do_cancel()"></i>
+        </span>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-4 col-form-label"><i class="fa fa-envelope" aria-hidden="true"></i> Email :
+        </label>
+        <div class="col-sm-6">
+          <input class="form-control-plaintext" #emailCopy type="text" formControlName="email">
+          <div *ngIf="emailHideShow" class="blue">{{clipCopy}}</div>
+          <div class="error" *ngIf="personalForm.get('email').hasError('pattern')">
+            please provide valid email
+          </div>
+        </div>
+        <span><i class="fa fa-copy" (click)="copyEmail(emailCopy)"></i></span>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-4 col-form-label"><i class="fa fa-phone-square" aria-hidden="true"></i> Phone :</label>
+        <div class="col-sm-6">
+          <input type="tel" class="form-control" formControlName="phone">
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-4 col-form-label"><i class="fa fa-map-marker" aria-hidden="true"></i> Location :</label>
+        <div class="col-sm-6">
+          <input type="text" class="form-control-plaintext" formControlName="location">
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-4 col-form-label"><i class="fa fa-clock-o" aria-hidden="true"></i> Timezone :</label>
+        <div class="col-sm-6">
+          <input readonly class="form-control-plaintext" #timeCopy type="text"
+            value="{{personalForm.value.timeZone | date:'fullTime'}}">
+          <div *ngIf="timeHideShow" class="blue">{{clipCopy}}</div>
+        </div>
+        <span><i class="fa fa-copy" (click)="copyTime(timeCopy)"></i></span>
+      </div>
+
+      <hr>
+
+      <h5>Change your password</h5>
+
+      <div class="form-group row">
+        <label class="col-sm-4 col-form-label"><i class="fa fa-key" aria-hidden="true"></i> Current Password </label>
+        <div class="col-sm-6">
+          <input type="text" class="form-control" formControlName="currentPassword">
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-4 col-form-label"><i class="fa fa-key" aria-hidden="true"></i> New Password</label>
+        <div class="col-sm-6">
+          <input type="password" class="form-control" formControlName="newPassword" maxlength="16">
+          <div class="error"
+            *ngIf="personalForm.get('newPassword').invalid && (personalForm.get('newPassword').touched || personalForm.get('newPassword').dirty)">
+            <div *ngIf="personalForm.get('newPassword').hasError('required')">
+              *Password is required
+            </div>
+          </div>
+          <span class="error" *ngIf="personalForm.get('newPassword').hasError('passwordStrength')">
+            {{personalForm.get('newPassword').errors['passwordStrength']}}
+          </span>
+        </div>
+        <span *ngIf="personalForm.get('newPassword').hasError('count')" [ngClass]="{
+          'red' : personalForm.get('newPassword').errors['count'] == 20,
+          'orange' : personalForm.get('newPassword').errors['count']  == 40,
+          'yellow' : personalForm.get('newPassword').errors['count']  == 60,
+          'blue' : personalForm.get('newPassword').errors['count']  == 80,
+          'green' : personalForm.get('newPassword').errors['count']  == 100
+       }">
+          {{personalForm.get('newPassword').errors['count']}} <span style="color: green;">/ 100</span>
+        </span>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-4 col-form-label"><i class="fa fa-key" aria-hidden="true"></i> Re-type Password</label>
+        <div class="col-sm-6">
+          <input type="password" class="form-control" formControlName="rePassword" maxlength="16">
+          <div class="error"
+            *ngIf="personalForm.get('rePassword').dirty && personalForm.value.newPassword != personalForm.value.rePassword">
+            *Password does not match
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary float-right" type="submit">Save Changes</button>
+    </form>
+  </div>
+
+  <hr>
+
+  <div *ngIf="showValue">
+    Value in JSON format : {{personalForm.value | json}}
+  </div>
+
+</div>
